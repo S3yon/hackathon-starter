@@ -27,7 +27,11 @@ for seat in "${SEATS[@]}"; do
     echo "+ herdr agent start $seat --kind $KIND --pane <new pane>"
   else
     pane="$(herdr pane split --current --direction "$dir" --cwd "$wt" --no-focus | jq -r '.result.pane.pane_id')"
-    herdr agent start "$seat" --kind "$KIND" --pane "$pane"
+    if ! herdr agent start "$seat" --kind "$KIND" --pane "$pane" >/dev/null 2>&1; then
+      # A new worktree folder asks for trust first. Answer it in that pane; this waits.
+      echo "Answer the prompt in the $seat pane (usually: trust this folder)."
+      herdr agent wait "$seat" --until idle --until done --timeout 300000 >/dev/null
+    fi
   fi
   run herdr agent prompt "$seat" "You are the $seat seat. Read $MAIN/rig/culture.md and $MAIN/rig/seats/$seat.md. Your worktree is $wt. Reply 'ready' and wait for a slice."
   dir=down
