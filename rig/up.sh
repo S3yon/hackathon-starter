@@ -22,7 +22,7 @@ for seat in "${SEATS[@]}"; do
     run git -C "$MAIN" worktree add -b "seat/$seat" "$wt" main
     [[ -f "$MAIN/.env.local" ]] && run cp "$MAIN/.env.local" "$wt/.env.local"
   fi
-  intro="You are the $seat seat. Read $MAIN/rig/culture.md and $MAIN/rig/seats/$seat.md. Your worktree is $wt. Reply 'ready' and wait for a slice."
+  intro="You are the $seat seat. Read rig/culture.md and rig/seats/$seat.md (your worktree, $wt, has them). Reply 'ready' and wait for a slice."
   args=("$intro"); [[ "$KIND" == claude ]] && args=(--no-chrome -n "$seat" "$intro")
   if (( DRY )); then
     echo "+ herdr pane split --current --direction $dir --cwd $wt --no-focus"
